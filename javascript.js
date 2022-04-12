@@ -44,33 +44,95 @@ function game(){
     let computerScore = 0;
     let playerScore = 0;
 
-    for(i = 0; i< 5; i++){
-        let playerSelection = prompt("Rock, Paper, Scissors, Shoot!(Choose your item)");
-        let computerSelection = computerPlay();
-        let winPrompt = `You win! ${playerSelection} beats ${computerSelection}`;
-    let losePrompt = `You lose! ${computerSelection} beats ${playerSelection}`;
-        let result = playRound(computerSelection, playerSelection);
-        if (result === 2){
-            playerScore++;
-            console.log(winPrompt);
-        }else if (result === 3){
-            computerScore++;
-            console.log(losePrompt);
-        }else if (result ===4){
-            playerSelection = prompt(`Oops! Didn't recognize your choice of ${playerChoice}. Try again!`);
-        }else{
-            console.log('It\'s a tie!');
-        }
-        console.log(`Score: Player - ${playerScore}, Computer - ${computerScore}`);
-    }
+    const buttons = document.querySelectorAll('button');
+    const div = document.querySelector('div');
+    const para = document.createElement('p');
+    const scoreBoard = document.createElement('div');
+    const score = document.createElement('h3');
+    const cScore = document.createElement('h3');
 
-    if(playerScore > computerScore){
-        console.log("Player wins!")
-    }
-    else if(computerScore > playerScore){
-        console.log("Computer wins!")
-    }else{
-        console.log("It's a tie!")
+    
+    score.classList.add("status");
+    cScore.classList.add("status")
+    scoreBoard.classList.add("scoreboard");
+
+    
+
+    cScore.textContent = 0;
+    score.textContent = 0;
+
+    const number = document.querySelector('.number');
+    const cnumber = document.querySelector('.cNumber');
+
+    buttons.forEach((button) => {
+
+        button.addEventListener('click',() => {
+
+            let computerSelection = computerPlay();
+            let playerSelection = button.id;
+            let gameId = playRound(computerSelection,playerSelection);
+
+            switch(getWinner(gameId)){
+                case "tie":
+                    para.textContent = "It's a tie!";
+                    break;
+                case "player":
+                    para.textContent = `${playerSelection} beats ${computerSelection}, you win!`;
+                    playerScore++;
+                    score.textContent = playerScore;
+                    number.classList.add('winner')
+                    break;
+                case "computer":
+                    para.textContent = `${computerSelection} beats ${playerSelection}, you lose!`;
+                    computerScore++
+                    cScore.textContent = computerScore;
+                    cnumber.classList.add('winner')
+                    break;
+                default:
+                    console.log("Sorry, an error occured");
+            }
+
+
+        });
+
+    cnumber.addEventListener('transitionend', removeTransition);
+    number.addEventListener('transitionend',removeTransition);
+        
+        
+    });
+    
+    
+
+    scoreBoard.appendChild(score);
+    scoreBoard.appendChild(cScore);
+    document.body.appendChild(scoreBoard);
+    document.body.appendChild(para);
+
+
+    
+
+    
+}
+
+function removeTransition(e){
+    if(e.propertyName !== 'transform') return;
+
+    this.classList.remove('winner');
+}
+
+
+
+function getWinner(id){
+    switch (id){
+        case 1:
+            return "tie"
+            break;
+        case 2:
+            return "player"
+        case 3:
+            return "computer"
+        default:
+            return "error"
     }
 }
 
