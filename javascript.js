@@ -43,7 +43,6 @@ function game(){
 
     let computerScore = 0;
     let playerScore = 0;
-
     const buttons = document.querySelectorAll('button');
     const div = document.querySelector('div');
     const para = document.createElement('p');
@@ -64,6 +63,7 @@ function game(){
     const number = document.querySelector('.number');
     const cnumber = document.querySelector('.cNumber');
 
+
     buttons.forEach((button) => {
 
         button.addEventListener('click',() => {
@@ -71,25 +71,44 @@ function game(){
             let computerSelection = computerPlay();
             let playerSelection = button.id;
             let gameId = playRound(computerSelection,playerSelection);
+            if (playerScore > 4){
+                para.textContent = "Congratulations, you've beat the computer!";
+                let playAgain=window.confirm("You Win! Would you like to play again?");
+                if (playAgain){
+                    playerScore =  0;
+                    computerScore = 0;
+                    score.textContent =playerScore;
+                    cScore.textContent =computerScore;
+                }else return;
+            }else if(computerScore > 4){
+                para.textContent = "Sorry! you lost! Maybe you should rethink your strategy!"
+                let playAgain=window.confirm("You Lose! Would you like to play again?")
+                if (playAgain){
+                    playerScore = 0;
+                    computerScore = 0;
+                    score.textContent =playerScore;
+                    cScore.textContent =computerScore;
+                }else return;
+            }else{
 
-            switch(getWinner(gameId)){
-                case "tie":
-                    para.textContent = "It's a tie!";
-                    break;
-                case "player":
-                    para.textContent = `${playerSelection} beats ${computerSelection}, you win!`;
-                    playerScore++;
-                    score.textContent = playerScore;
-                    number.classList.add('winner')
-                    break;
-                case "computer":
-                    para.textContent = `${computerSelection} beats ${playerSelection}, you lose!`;
-                    computerScore++
-                    cScore.textContent = computerScore;
-                    cnumber.classList.add('winner')
-                    break;
-                default:
-                    console.log("Sorry, an error occured");
+                switch(getWinner(gameId)){
+                    case "tie":
+                        para.textContent = "It's a tie!";
+                        break;
+                    case "player":
+                        para.textContent = `${playerSelection} beats ${computerSelection}, you win!`;                        playerScore++;
+                        score.textContent = playerScore;
+                        number.classList.add('winner')
+                        break;
+                    case "computer":
+                        para.textContent = `${computerSelection} beats ${playerSelection}, you lose!`;
+                        computerScore++
+                        cScore.textContent = computerScore;
+                        cnumber.classList.add('winner')
+                        break;
+                    default:
+                        console.log("Sorry, an error occured");
+                }
             }
 
 
@@ -97,9 +116,13 @@ function game(){
 
     cnumber.addEventListener('transitionend', removeTransition);
     number.addEventListener('transitionend',removeTransition);
+
+    
+
+    
         
         
-    });
+        });
     
     
 
@@ -108,11 +131,13 @@ function game(){
     document.body.appendChild(scoreBoard);
     document.body.appendChild(para);
 
-
-    
-
-    
 }
+
+
+    
+
+    
+
 
 function removeTransition(e){
     if(e.propertyName !== 'transform') return;
